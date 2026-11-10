@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartPark — Intelligent Parking Management System</title>
+  <meta name="description" content="SmartPark: Customer reservation requests with admin approval, live slot occupancy, and ACID-safe booking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ LOGIN PAGE ═══ -->
+<div id="page-login" class="page active">
+  <div class="login-bg">
+    <div class="login-orb orb1"></div>
+    <div class="login-orb orb2"></div>
+    <div class="login-orb orb3"></div>
+  </div>
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="brand-icon">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#1a3a2a"/><path d="M14 6C9.58 6 6 9.58 6 14s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 11.2c-2.67 0-5.03-1.37-6.4-3.44.03-2.12 4.27-3.28 6.4-3.28 2.12 0 6.37 1.16 6.4 3.28-1.37 2.07-3.73 3.44-6.4 3.44z" fill="white"/></svg>
+      </div>
+      <h1 class="brand-name">SmartPark<sup>™</sup></h1>
+      <p class="brand-sub">Intelligent Parking Management · Real-Time Occupancy</p>
+    </div>
+
+    <!-- Login role tabs -->
+    <div class="login-tabs">
+      <button id="tab-customer" class="login-tab active" onclick="switchLoginTab('customer')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Customer Portal
+      </button>
+      <button id="tab-admin" class="login-tab" onclick="switchLoginTab('admin')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Admin Login
+      </button>
+    </div>
+
+    <!-- ── CUSTOMER SIGN IN ── -->
+    <div id="form-customer-signin" class="login-card">
+      <div class="login-badge"><span class="dot green"></span> Customer Portal</div>
+      <h2>Sign in to book parking</h2>
+      <p class="login-desc">Request a parking slot and track your reservation status.</p>
+      <form id="customer-login-form" autocomplete="off">
+        <div class="form-group">
+          <label for="cust-username">Username</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input id="cust-username" type="text" placeholder="e.g. ravi" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="cust-password">Password</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input id="cust-password" type="password" placeholder="••••••••" required />
+          </div>
+        </div>
+        <div id="cust-login-error" class="form-error hidden"></div>
+        <button type="submit" id="cust-login-btn" class="btn btn-primary btn-full">
+          <span class="btn-text">Sign In as Customer</span>
+          <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+      <div class="login-hint">
+        <span>Demo:</span>
+        <button class="hint-btn" onclick="fillCustomerDemo()">Use ravi / pass123</button>
+      </div>
+      <div class="login-divider"><span>or</span></div>
+      <button class="btn btn-ghost btn-full" onclick="showRegisterForm()">
+        Create a new account →
+      </button>
+    </div>
+
+    <!-- ── CUSTOMER REGISTER ── -->
+    <div id="form-customer-register" class="login-card hidden">
+      <div class="login-badge" style="background:#fff5ed;color:#b5521a;border-color:#fcd3ae"><span class="dot orange"></span> Create Account</div>
+      <h2>Create your account</h2>
+      <p class="login-desc">Register to request parking slots and track bookings.</p>
+      <form id="register-form" autocomplete="off">
+        <div class="form-group">
+          <label for="reg-fullname">Full Name</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input id="reg-fullname" type="text" placeholder="Your full name" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reg-username">Username</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>
+            <input id="reg-username" type="text" placeholder="Choose a username" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input id="reg-password" type="password" placeholder="Min. 6 characters" required />
+          </div>
+        </div>
+        <div id="register-error" class="form-error hidden"></div>
+        <div id="register-success" class="form-success hidden"></div>
+        <button type="submit" id="register-btn" class="btn btn-primary btn-full">
+          <span class="btn-text">Create Account</span>
+        </button>
+      </form>
+      <div class="login-hint">
+        <span>Already have an account?</span>
+        <button class="hint-btn" onclick="showSignInForm()">Sign in →</button>
+      </div>
+    </div>
+
+    <!-- ── ADMIN LOGIN ── -->
+    <div id="form-admin-login" class="login-card hidden">
+      <div class="login-badge" style="background:#eef2ff;color:#4338ca;border-color:#c7d2fe"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#4338ca"></span> Admin Console</div>
+      <h2>Administrator Login</h2>
+      <p class="login-desc">Access slot management, approve requests, and view analytics.</p>
+      <form id="admin-login-form" autocomplete="off">
+        <div class="form-group">
+          <label for="admin-username">Username</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input id="admin-username" type="text" placeholder="admin" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="admin-password">Password</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input id="admin-password" type="password" placeholder="••••••••" required />
+          </div>
+        </div>
+        <div id="admin-login-error" class="form-error hidden"></div>
+        <button type="submit" id="admin-login-btn" class="btn btn-indigo btn-full">
+          <span class="btn-text">Sign In as Administrator</span>
+          <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+      <div class="login-hint">
+        <span>Demo:</span>
+        <button class="hint-btn" onclick="fillAdminDemo()">Use admin / admin123</button>
+      </div>
+    </div>
+
+    <div class="login-db-badge" id="login-db-status">
+      <div class="dot orange pulse"></div>
+      <span>Checking database connection…</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ CUSTOMER PORTAL ═══ -->
+<div id="page-customer" class="page">
+  <aside class="sidebar sidebar-customer">
+    <div class="sidebar-top">
+      <div class="sidebar-brand">
+        <div class="sb-icon" style="background:#40916c">P</div>
+        <div><div class="sb-title">SMARTPARK</div><div class="sb-sub">Customer Portal</div></div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="cust-avatar">C</div>
+        <div>
+          <div class="user-name" id="cust-sb-name">CUSTOMER</div>
+          <div class="user-role">Parking Customer</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="cnav-slots" onclick="custSwitchView('cust-slots')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Available Slots
+        </button>
+        <button class="nav-item" id="cnav-requests" onclick="custSwitchView('cust-requests')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          My Requests
+          <span class="nav-badge" id="cnav-req-count">0</span>
+        </button>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn btn-outline-light btn-full" onclick="custRefreshAll()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Refresh
+      </button>
+      <button class="btn btn-danger btn-full" onclick="logout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Log Out
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h2 class="page-title" id="cust-page-title">Available Parking Slots</h2>
+      </div>
+      <div class="topbar-right">
+        <div class="db-status-badge" id="cust-db-badge">
+          <div class="dot green pulse"></div>
+          <span>Database: Online</span>
+        </div>
+        <div class="welcome-chip">
+          👋 <span id="cust-welcome-name">Customer</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Customer: Available Slots -->
+    <section class="view active" id="view-cust-slots">
+      <div class="view-info-banner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Click <strong>Request This Slot</strong> on any available bay. Your request will be sent to the admin for approval.
+      </div>
+      <div class="slots-grid" id="cust-slots-grid">
+        <div class="loading-state">Loading available slots…</div>
+      </div>
+    </section>
+
+    <!-- Customer: My Requests -->
+    <section class="view" id="view-cust-requests">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="card-header" style="padding:18px 20px 0">
+          <div>
+            <div class="card-title">My Reservation Requests</div>
+            <div class="card-sub">Track the status of your submitted parking requests</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Request #</th><th>Slot</th><th>Requested At</th><th>Status</th><th>Admin Note</th><th>Reservation ID</th><th>Action</th></tr>
+            </thead>
+            <tbody id="cust-requests-body">
+              <tr><td colspan="7" class="empty-row">Loading your requests…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ ADMIN DASHBOARD ═══ -->
+<div id="page-app" class="page">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-brand">
+        <div class="sb-icon">P</div>
+        <div><div class="sb-title">SMARTPARK</div><div class="sb-sub">Admin Console</div></div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-avatar">A</div>
+        <div>
+          <div class="user-name" id="sb-username">ADMIN</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" id="nav-requests" onclick="switchView('requests')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Pending Requests
+          <span class="nav-badge" id="nav-pending-count" style="background:#f97316;color:#fff">0</span>
+        </button>
+        <button class="nav-item" id="nav-slots" onclick="switchView('slots')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Parking Slots
+          <span class="nav-badge" id="nav-slot-count">0</span>
+        </button>
+        <button class="nav-item" id="nav-reservations" onclick="switchView('reservations')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Reservations
+          <span class="nav-badge active-badge" id="nav-res-count">0</span>
+        </button>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn btn-outline-light btn-full" onclick="refreshAll()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Refresh Data
+      </button>
+      <button class="btn btn-danger btn-full" onclick="logout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Log Out
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h2 class="page-title" id="page-title">Dashboard Overview</h2>
+      </div>
+      <div class="topbar-right">
+        <div class="db-status-badge" id="db-status-badge">
+          <div class="dot green pulse"></div>
+          <span id="db-status-text">Database: Checking…</span>
+        </div>
+        <button class="btn btn-primary" onclick="openReserveModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Direct Reserve
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">TOTAL SLOTS</span><div class="stat-dot blue"></div></div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-sub">All designated bays</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">AVAILABLE</span><div class="stat-dot green"></div></div>
+          <div class="stat-value green-val" id="stat-avail">—</div>
+          <div class="stat-sub">Ready for parking</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span class="stat-label">OCCUPIED</span><div class="stat-dot orange"></div></div>
+          <div class="stat-value orange-val" id="stat-occ">—</div>
+          <div class="stat-sub">Currently in use</div>
+        </div>
+        <div class="stat-card stat-card-pending" onclick="switchView('requests')" style="cursor:pointer" title="Click to manage requests">
+          <div class="stat-top"><span class="stat-label">PENDING REQUESTS</span><div class="stat-dot" style="background:#f97316;box-shadow:0 0 6px rgba(249,115,22,0.5)"></div></div>
+          <div class="stat-value" id="stat-pending" style="color:#b5521a">—</div>
+          <div class="stat-sub">Awaiting your approval</div>
+        </div>
+      </div>
+
+      <div class="dash-split">
+        <div class="card dash-map-card">
+          <div class="card-header">
+            <div><div class="card-title">Visual Parking Lot Layout</div><div class="card-sub">Real-time occupancy — click available slot to reserve</div></div>
+            <div class="live-badge"><div class="dot green pulse"></div> Live</div>
+          </div>
+          <div class="slot-grid" id="dash-slot-grid">
+            <div class="skeleton-grid">
+              <div class="skeleton-card"></div><div class="skeleton-card"></div>
+              <div class="skeleton-card"></div><div class="skeleton-card"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card dash-recent-card">
+          <div class="card-header"><div class="card-title">Recent Reservations</div></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>ID</th><th>Customer</th><th>Slot</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="recent-res-body"><tr><td colspan="5" class="empty-row">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Requests View (Admin) -->
+    <section class="view" id="view-requests">
+      <div class="view-toolbar">
+        <div class="filter-tabs" id="req-filter-tabs">
+          <button class="filter-tab active" data-filter="all"       onclick="filterRequests('all')">All</button>
+          <button class="filter-tab" data-filter="PENDING"   onclick="filterRequests('PENDING')">
+            <div class="dot orange"></div> Pending <span class="tab-count" id="req-pending-count"></span>
+          </button>
+          <button class="filter-tab" data-filter="APPROVED"  onclick="filterRequests('APPROVED')">
+            <div class="dot green"></div> Approved
+          </button>
+          <button class="filter-tab" data-filter="REJECTED"  onclick="filterRequests('REJECTED')">
+            <div class="dot red"></div> Rejected
+          </button>
+        </div>
+        <div class="toolbar-right">
+          <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search requests…" id="req-search" oninput="searchRequests()" />
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Req #</th><th>Customer</th><th>Slot</th><th>Requested At</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="requests-body">
+              <tr><td colspan="6" class="empty-row">Loading requests…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slots View -->
+    <section class="view" id="view-slots">
+      <div class="view-toolbar">
+        <div class="filter-tabs" id="slot-filter-tabs">
+          <button class="filter-tab active" data-filter="all"       onclick="filterSlots('all')">All Slots <span id="filter-all-count" class="tab-count"></span></button>
+          <button class="filter-tab" data-filter="available" onclick="filterSlots('available')"><div class="dot green"></div> Available <span id="filter-avail-count" class="tab-count"></span></button>
+          <button class="filter-tab" data-filter="occupied"  onclick="filterSlots('occupied')"><div class="dot orange"></div> Occupied <span id="filter-occ-count" class="tab-count"></span></button>
+        </div>
+        <div class="toolbar-right">
+          <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search slots…" id="slot-search" oninput="searchSlots()" />
+          </div>
+        </div>
+      </div>
+      <div class="slots-grid" id="slots-grid"><div class="loading-state">Loading parking slots…</div></div>
+    </section>
+
+    <!-- Reservations View -->
+    <section class="view" id="view-reservations">
+      <div class="view-toolbar">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all"       onclick="filterReservations('all')">All</button>
+          <button class="filter-tab" data-filter="ACTIVE"    onclick="filterReservations('ACTIVE')"><div class="dot green"></div> Active</button>
+          <button class="filter-tab" data-filter="CANCELLED" onclick="filterReservations('CANCELLED')"><div class="dot red"></div> Cancelled</button>
+        </div>
+        <div class="toolbar-right">
+          <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search reservations…" id="res-search" oninput="searchReservations()" />
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Res. ID</th><th>Customer</th><th>Slot</th><th>Date &amp; Time</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="reservations-body"><tr><td colspan="6" class="empty-row">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ MODALS ══════════════════════════ -->
+
+<!-- Customer: Submit Request Modal -->
+<div id="modal-request" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-request')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Request a Parking Slot</div>
+        <div class="modal-sub">Your request will be sent to the admin for approval</div>
+      </div>
+      <button class="modal-close" onclick="closeRequestModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form id="request-form" onsubmit="submitRequest(event)">
+      <div class="slot-preview-box" id="request-slot-preview"></div>
+      <div id="request-error" class="form-error hidden"></div>
+      <div id="request-success" class="form-success hidden"></div>
+      <input type="hidden" id="request-slot-id" />
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeRequestModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="request-submit-btn">
+          <span class="btn-text">Send Request to Admin</span>
+          <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Admin: Approve Confirm Modal -->
+<div id="modal-approve" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-approve')">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Approve Reservation Request</div>
+      <button class="modal-close" onclick="closeApproveModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cancel-warning" style="color:#1a7c4e">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <p id="approve-confirm-text">Approve this request and create an ACTIVE reservation?</p>
+    </div>
+    <div id="approve-error" class="form-error hidden" style="margin:0 24px 12px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeApproveModal()">Cancel</button>
+      <button class="btn btn-primary" id="approve-confirm-btn" onclick="confirmApprove()">✓ Approve &amp; Reserve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin: Reject Modal with Note -->
+<div id="modal-reject" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-reject')">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Reject Reservation Request</div>
+      <button class="modal-close" onclick="closeRejectModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form onsubmit="confirmReject(event)" style="padding:16px 24px">
+      <p id="reject-confirm-text" style="font-size:0.88rem;color:#4a6358;margin-bottom:14px"></p>
+      <div class="form-group">
+        <label for="reject-note">Reason (optional)</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <input id="reject-note" type="text" placeholder="e.g. Slot reserved for maintenance" style="padding-left:38px" />
+        </div>
+      </div>
+      <div id="reject-error" class="form-error hidden"></div>
+      <div class="modal-footer" style="padding:0;border:none;margin-top:8px">
+        <button type="button" class="btn btn-ghost" onclick="closeRejectModal()">Cancel</button>
+        <button type="submit" class="btn btn-danger" id="reject-confirm-btn">✕ Reject Request</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Admin: Direct Reserve Modal -->
+<div id="modal-reserve" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-reserve')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><div class="modal-title">Direct Reserve a Slot</div><div class="modal-sub">Admin bypass — no request needed</div></div>
+      <button class="modal-close" onclick="closeReserveModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form id="reserve-form" onsubmit="submitReservation(event)">
+      <div class="form-group">
+        <label for="res-customer">Customer Name</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input id="res-customer" type="text" placeholder="Enter customer name" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="res-slot">Select Parking Slot</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <select id="res-slot" required style="padding-left:38px"><option value="">Loading…</option></select>
+        </div>
+      </div>
+      <div id="reserve-error" class="form-error hidden"></div>
+      <div id="reserve-success" class="form-success hidden"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeReserveModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="reserve-submit-btn"><span class="btn-text">Confirm Reservation</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Admin: Cancel Reservation Modal -->
+<div id="modal-cancel" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-cancel')">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Cancel Reservation</div>
+      <button class="modal-close" onclick="closeCancelModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cancel-warning">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p id="cancel-confirm-text">Are you sure you want to cancel this reservation?</p>
+    </div>
+    <div id="cancel-error" class="form-error hidden" style="margin:0 24px 12px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeCancelModal()">Keep Reservation</button>
+      <button class="btn btn-danger" id="cancel-confirm-btn" onclick="confirmCancel()">Yes, Cancel It</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer: Cancel Request Modal -->
+<div id="modal-cancel-request" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-cancel-request')">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Cancel Reservation Request</div>
+      <button class="modal-close" onclick="closeCancelRequestModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cancel-warning">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p id="cancel-request-text">Are you sure you want to cancel this request?</p>
+    </div>
+    <div id="cancel-request-error" class="form-error hidden" style="margin:0 24px 12px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeCancelRequestModal()">Keep Request</button>
+      <button class="btn btn-danger" id="cancel-request-confirm-btn" onclick="confirmCancelRequest()">Yes, Cancel Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin: Release Slot Modal -->
+<div id="modal-release-slot" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-release-slot')">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Release Parking Slot</div>
+      <button class="modal-close" onclick="closeReleaseSlotModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cancel-warning" style="color:#d97706">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+      <p id="release-slot-text">Release this parking slot? It will become immediately available for other drivers.</p>
+    </div>
+    <div id="release-slot-error" class="form-error hidden" style="margin:0 24px 12px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeReleaseSlotModal()">Cancel</button>
+      <button class="btn btn-warning-action" id="release-slot-confirm-btn" onclick="confirmReleaseSlot()">🔓 Release Slot</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
